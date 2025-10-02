@@ -1,0 +1,19 @@
+.jpztriplebanner__banner {
+    display: flex;;
+    flex-wrap: wrap;
+}
+
+.jpztriplebanner__banner > * {
+    flex: max(50%, 400px);
+    min-width: 0;
+}
+
+.jpztriplebanner__banner:nth-child(2n){
+    flex-direction: row-reverse;
+}
+
+.jpztriplebanner__content {
+    display: grid;
+    padding: 1rem min(2rem, 10%);
+    align-content: center;
+}

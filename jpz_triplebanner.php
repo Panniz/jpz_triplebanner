@@ -358,25 +358,25 @@ class Jpz_TripleBanner extends Module
         $values[self::B1_IMAGE] = Configuration::get(self::B1_IMAGE); // Non lo usiamo per il file input, ma serve per il postProcess
         foreach ($languages as $lang) {
             $values[self::B1_TEXT][$lang['id_lang']] = Configuration::get(self::B1_TEXT, $lang['id_lang']);
+            $values[self::B1_QUERY_PARAMS][$lang['id_lang']] = Configuration::get(self::B1_QUERY_PARAMS, $lang['id_lang']);
         }
         $values[self::B1_CATEGORY] = Configuration::get(self::B1_CATEGORY);
-        $values[self::B1_QUERY_PARAMS] = Configuration::get(self::B1_QUERY_PARAMS);
 
         // Banner 2
         $values[self::B2_IMAGE] = Configuration::get(self::B2_IMAGE);
         foreach ($languages as $lang) {
             $values[self::B2_TEXT][$lang['id_lang']] = Configuration::get(self::B2_TEXT, $lang['id_lang']);
+            $values[self::B2_QUERY_PARAMS][$lang['id_lang']] = Configuration::get(self::B2_QUERY_PARAMS, $lang['id_lang']);
         }
         $values[self::B2_CATEGORY] = Configuration::get(self::B2_CATEGORY);
-        $values[self::B2_QUERY_PARAMS] = Configuration::get(self::B2_QUERY_PARAMS);
 
         // Banner 3
         $values[self::B3_IMAGE] = Configuration::get(self::B3_IMAGE);
         foreach ($languages as $lang) {
             $values[self::B3_TEXT][$lang['id_lang']] = Configuration::get(self::B3_TEXT, $lang['id_lang']);
+            $values[self::B3_QUERY_PARAMS][$lang['id_lang']] = Configuration::get(self::B3_QUERY_PARAMS, $lang['id_lang']);
         }
         $values[self::B3_CATEGORY] = Configuration::get(self::B3_CATEGORY);
-        $values[self::B3_QUERY_PARAMS] = Configuration::get(self::B3_QUERY_PARAMS);
 
         return $values;
     }
@@ -399,24 +399,24 @@ class Jpz_TripleBanner extends Module
         $text_b1 = [];
         $text_b2 = [];
         $text_b3 = [];
-        $qb1 = [];
-        $qb2 = [];
-        $qb3 = [];
+        $qp1 = [];
+        $qp2 = [];
+        $qp3 = [];
         foreach ($languages as $lang) {
             $text_b1[$lang['id_lang']] = Tools::getValue(self::B1_TEXT . '_' . $lang['id_lang']);
             $text_b2[$lang['id_lang']] = Tools::getValue(self::B2_TEXT . '_' . $lang['id_lang']);
             $text_b3[$lang['id_lang']] = Tools::getValue(self::B3_TEXT . '_' . $lang['id_lang']);
-            $qb1[$lang['id_lang']] = Tools::getValue(self::B1_QUERY_PARAMS . '_' . $lang['id_lang']);
-            $qb2[$lang['id_lang']] = Tools::getValue(self::B2_QUERY_PARAMS . '_' . $lang['id_lang']);
-            $qb3[$lang['id_lang']] = Tools::getValue(self::B3_QUERY_PARAMS . '_' . $lang['id_lang']);
+            $qp1[$lang['id_lang']] = Tools::getValue(self::B1_QUERY_PARAMS . '_' . $lang['id_lang']);
+            $qp2[$lang['id_lang']] = Tools::getValue(self::B2_QUERY_PARAMS . '_' . $lang['id_lang']);
+            $qp3[$lang['id_lang']] = Tools::getValue(self::B3_QUERY_PARAMS . '_' . $lang['id_lang']);
         }
         Configuration::updateValue(self::B1_TEXT, $text_b1, true); // true per permettere HTML
         Configuration::updateValue(self::B2_TEXT, $text_b2, true);
         Configuration::updateValue(self::B3_TEXT, $text_b3, true);
         // Salvataggio query params
-        Configuration::updateValue(self::B1_QUERY_PARAMS, $qb1);
-        Configuration::updateValue(self::B2_QUERY_PARAMS, $qb2);
-        Configuration::updateValue(self::B3_QUERY_PARAMS, $qb3);
+        Configuration::updateValue(self::B1_QUERY_PARAMS, $qp1);
+        Configuration::updateValue(self::B2_QUERY_PARAMS, $qp2);
+        Configuration::updateValue(self::B3_QUERY_PARAMS, $qp3);
 
         // Salvataggio Categorie
         Configuration::updateValue(self::B1_CATEGORY, (int)Tools::getValue(self::B1_CATEGORY));

@@ -1,5 +1,17 @@
 {
+    "name": "jacopo/jpz_triplebanner",
+    "type": "prestashop-module",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jacopo Zane",
+            "email": "jacopo.zane@gmail.com"
+        }
+    ],
     "require": {
         "league/uri-components": "^7.8"
+    },
+    "config": {
+        "prepend-autoloader": false
     }
 }

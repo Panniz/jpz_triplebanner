@@ -1,7 +1,16 @@
 <?php
+
+use League\Uri\Modifier;
+
 if (!defined('_PS_VERSION_')) {
     exit;
 }
+
+if (!file_exists(__DIR__ . '/vendor/autoload.php')) {
+    return;
+}
+
+require_once __DIR__ . '/vendor/autoload.php';
 
 class Jpz_TripleBanner extends Module
 {
@@ -15,16 +24,19 @@ class Jpz_TripleBanner extends Module
     public const B1_IMAGE = self::CONFIG_PREFIX . 'B1_IMAGE';
     public const B1_TEXT = self::CONFIG_PREFIX . 'B1_TEXT';
     public const B1_CATEGORY = self::CONFIG_PREFIX . 'B1_CATEGORY';
+    public const B1_QUERY_PARAMS = self::CONFIG_PREFIX . 'B1_QUERY_PARAMS';
 
     // Config keys for Banner 2
     public const B2_IMAGE = self::CONFIG_PREFIX . 'B2_IMAGE';
     public const B2_TEXT = self::CONFIG_PREFIX . 'B2_TEXT';
     public const B2_CATEGORY = self::CONFIG_PREFIX . 'B2_CATEGORY';
+    public const B2_QUERY_PARAMS = self::CONFIG_PREFIX . 'B2_QUERY_PARAMS';
 
     // Config keys for Banner 3
     public const B3_IMAGE = self::CONFIG_PREFIX . 'B3_IMAGE';
     public const B3_TEXT = self::CONFIG_PREFIX . 'B3_TEXT';
     public const B3_CATEGORY = self::CONFIG_PREFIX . 'B3_CATEGORY';
+    public const B3_QUERY_PARAMS = self::CONFIG_PREFIX . 'B3_QUERY_PARAMS';
 
 
     public function __construct()
@@ -52,7 +64,7 @@ class Jpz_TripleBanner extends Module
         if (
             !parent::install() ||
             !$this->registerHook('displayHome')
-        ){
+        ) {
             return false;
         }
 
@@ -71,10 +83,17 @@ class Jpz_TripleBanner extends Module
         Configuration::updateValue(self::B1_IMAGE, '');
         Configuration::updateValue(self::B1_TEXT, $default_text_values, true);
         Configuration::updateValue(self::B1_CATEGORY, 0);
+        Configuration::updateValue(self::B1_QUERY_PARAMS, '');
 
         Configuration::updateValue(self::B2_IMAGE, '');
         Configuration::updateValue(self::B2_TEXT, $default_text_values, true);
         Configuration::updateValue(self::B2_CATEGORY, 0);
+        Configuration::updateValue(self::B2_QUERY_PARAMS, '');
+
+        Configuration::updateValue(self::B3_IMAGE, '');
+        Configuration::updateValue(self::B3_TEXT, $default_text_values, true);
+        Configuration::updateValue(self::B3_CATEGORY, 0);
+        Configuration::updateValue(self::B3_QUERY_PARAMS, '');
 
         return true;
     }
@@ -84,9 +103,17 @@ class Jpz_TripleBanner extends Module
         Configuration::deleteByName(self::B1_IMAGE);
         Configuration::deleteByName(self::B1_TEXT);
         Configuration::deleteByName(self::B1_CATEGORY);
+        Configuration::deleteByName(self::B1_QUERY_PARAMS);
+
         Configuration::deleteByName(self::B2_IMAGE);
         Configuration::deleteByName(self::B2_TEXT);
         Configuration::deleteByName(self::B2_CATEGORY);
+        Configuration::deleteByName(self::B2_QUERY_PARAMS);
+
+        Configuration::deleteByName(self::B3_IMAGE);
+        Configuration::deleteByName(self::B3_TEXT);
+        Configuration::deleteByName(self::B3_CATEGORY);
+        Configuration::deleteByName(self::B3_QUERY_PARAMS);
 
         // Opzionale: cancellare le immagini caricate e la cartella uploads
         // $files = glob($this->upload_dir_path . '*');
@@ -157,21 +184,21 @@ class Jpz_TripleBanner extends Module
         $image_desc_b1 = '';
         if ($current_image_b1 && file_exists($this->upload_dir_path . $current_image_b1)) {
             $image_desc_b1 = '<img src="' . $this->upload_dir_url . $current_image_b1 . '" style="max-height:100px; margin-top:10px;" /><br/>' .
-                             $this->trans('Immagine attuale: %s', [$current_image_b1], 'Modules.Jpztriplebanner.Admin');
+                $this->trans('Immagine attuale: %s', [$current_image_b1], 'Modules.Jpztriplebanner.Admin');
         }
 
         $current_image_b2 = Configuration::get(self::B2_IMAGE);
         $image_desc_b2 = '';
         if ($current_image_b2 && file_exists($this->upload_dir_path . $current_image_b2)) {
             $image_desc_b2 = '<img src="' . $this->upload_dir_url . $current_image_b2 . '" style="max-height:100px; margin-top:10px;" /><br/>' .
-                             $this->trans('Immagine attuale: %s', [$current_image_b2], 'Modules.Jpztriplebanner.Admin');
+                $this->trans('Immagine attuale: %s', [$current_image_b2], 'Modules.Jpztriplebanner.Admin');
         }
 
         $current_image_b3 = Configuration::get(self::B3_IMAGE);
         $image_desc_b3 = '';
         if ($current_image_b3 && file_exists($this->upload_dir_path . $current_image_b3)) {
             $image_desc_b3 = '<img src="' . $this->upload_dir_url . $current_image_b3 . '" style="max-height:100px; margin-top:10px;" /><br/>' .
-                             $this->trans('Immagine attuale: %s', [$current_image_b3], 'Modules.Jpztriplebanner.Admin');
+                $this->trans('Immagine attuale: %s', [$current_image_b3], 'Modules.Jpztriplebanner.Admin');
         }
 
 
@@ -218,6 +245,13 @@ class Jpz_TripleBanner extends Module
                             ]
                         ],
                     ],
+                    [
+                        'type' => 'text',
+                        'label' => $this->trans('Additional query params', [], 'Modules.Jpztriplebanner.Admin'),
+                        'name' => self::B1_QUERY_PARAMS,
+                        'lang' => true,
+                        'desc' => $this->trans('Add eventual additional query params.', [], 'Modules.Jpztriplebanner.Admin'),
+                    ],
                     // Banner 2
                     [
                         'type' => 'html',
@@ -253,6 +287,13 @@ class Jpz_TripleBanner extends Module
                                 'label' => $this->trans('-- Seleziona una categoria --', [], 'Modules.Jpztriplebanner.Admin')
                             ]
                         ],
+                    ],
+                    [
+                        'type' => 'text',
+                        'label' => $this->trans('Additional query params', [], 'Modules.Jpztriplebanner.Admin'),
+                        'name' => self::B2_QUERY_PARAMS,
+                        'lang' => true,
+                        'desc' => $this->trans('Add eventual additional query params.', [], 'Modules.Jpztriplebanner.Admin'),
                     ],
                     // Banner 3
                     [
@@ -290,6 +331,13 @@ class Jpz_TripleBanner extends Module
                             ]
                         ],
                     ],
+                    [
+                        'type' => 'text',
+                        'label' => $this->trans('Additional query params', [], 'Modules.Jpztriplebanner.Admin'),
+                        'name' => self::B3_QUERY_PARAMS,
+                        'lang' => true,
+                        'desc' => $this->trans('Add eventual additional query params.', [], 'Modules.Jpztriplebanner.Admin'),
+                    ],
                 ],
                 'submit' => [
                     'title' => $this->trans('Salva', [], 'Admin.Actions'),
@@ -312,6 +360,7 @@ class Jpz_TripleBanner extends Module
             $values[self::B1_TEXT][$lang['id_lang']] = Configuration::get(self::B1_TEXT, $lang['id_lang']);
         }
         $values[self::B1_CATEGORY] = Configuration::get(self::B1_CATEGORY);
+        $values[self::B1_QUERY_PARAMS] = Configuration::get(self::B1_QUERY_PARAMS);
 
         // Banner 2
         $values[self::B2_IMAGE] = Configuration::get(self::B2_IMAGE);
@@ -319,6 +368,7 @@ class Jpz_TripleBanner extends Module
             $values[self::B2_TEXT][$lang['id_lang']] = Configuration::get(self::B2_TEXT, $lang['id_lang']);
         }
         $values[self::B2_CATEGORY] = Configuration::get(self::B2_CATEGORY);
+        $values[self::B2_QUERY_PARAMS] = Configuration::get(self::B2_QUERY_PARAMS);
 
         // Banner 3
         $values[self::B3_IMAGE] = Configuration::get(self::B3_IMAGE);
@@ -326,6 +376,7 @@ class Jpz_TripleBanner extends Module
             $values[self::B3_TEXT][$lang['id_lang']] = Configuration::get(self::B3_TEXT, $lang['id_lang']);
         }
         $values[self::B3_CATEGORY] = Configuration::get(self::B3_CATEGORY);
+        $values[self::B3_QUERY_PARAMS] = Configuration::get(self::B3_QUERY_PARAMS);
 
         return $values;
     }
@@ -348,19 +399,30 @@ class Jpz_TripleBanner extends Module
         $text_b1 = [];
         $text_b2 = [];
         $text_b3 = [];
+        $qb1 = [];
+        $qb2 = [];
+        $qb3 = [];
         foreach ($languages as $lang) {
             $text_b1[$lang['id_lang']] = Tools::getValue(self::B1_TEXT . '_' . $lang['id_lang']);
             $text_b2[$lang['id_lang']] = Tools::getValue(self::B2_TEXT . '_' . $lang['id_lang']);
             $text_b3[$lang['id_lang']] = Tools::getValue(self::B3_TEXT . '_' . $lang['id_lang']);
+            $qb1[$lang['id_lang']] = Tools::getValue(self::B1_QUERY_PARAMS . '_' . $lang['id_lang']);
+            $qb2[$lang['id_lang']] = Tools::getValue(self::B2_QUERY_PARAMS . '_' . $lang['id_lang']);
+            $qb3[$lang['id_lang']] = Tools::getValue(self::B3_QUERY_PARAMS . '_' . $lang['id_lang']);
         }
         Configuration::updateValue(self::B1_TEXT, $text_b1, true); // true per permettere HTML
         Configuration::updateValue(self::B2_TEXT, $text_b2, true);
         Configuration::updateValue(self::B3_TEXT, $text_b3, true);
+        // Salvataggio query params
+        Configuration::updateValue(self::B1_QUERY_PARAMS, $qb1);
+        Configuration::updateValue(self::B2_QUERY_PARAMS, $qb2);
+        Configuration::updateValue(self::B3_QUERY_PARAMS, $qb3);
 
         // Salvataggio Categorie
         Configuration::updateValue(self::B1_CATEGORY, (int)Tools::getValue(self::B1_CATEGORY));
         Configuration::updateValue(self::B2_CATEGORY, (int)Tools::getValue(self::B2_CATEGORY));
         Configuration::updateValue(self::B3_CATEGORY, (int)Tools::getValue(self::B3_CATEGORY));
+
 
         if (count($errors)) {
             return $this->displayError(implode('<br />', $errors));
@@ -409,7 +471,7 @@ class Jpz_TripleBanner extends Module
             }
             Configuration::updateValue($configKey, $new_filename);
         } elseif (Tools::isSubmit('delete_' . $configKey)) { // Gestione opzionale per cancellare l'immagine
-             $old_image = Configuration::get($configKey);
+            $old_image = Configuration::get($configKey);
             if ($old_image && file_exists($this->upload_dir_path . $old_image)) {
                 unlink($this->upload_dir_path . $old_image);
             }
@@ -432,12 +494,16 @@ class Jpz_TripleBanner extends Module
         $text_b1 = Configuration::get(self::B1_TEXT, $id_lang);
         $cat_id_b1 = (int)Configuration::get(self::B1_CATEGORY);
         $cat_link_b1 = '';
+        $qp1 = str_replace('/', '\/', trim((string)Configuration::get(self::B1_QUERY_PARAMS, $id_lang)));
         $cat_name_b1 = '';
 
         if ($cat_id_b1 > 0) {
             $category1 = new Category($cat_id_b1, $id_lang);
             if (Validate::isLoadedObject($category1)) {
-                $cat_link_b1 = $this->context->link->getCategoryLink($category1);
+                $catUri = Modifier::wrap($this->context->link->getCategoryLink($category1))
+                    ->appendQuery($qp1);
+
+                $cat_link_b1 = $catUri->toString();
                 $cat_name_b1 = $category1->name;
             }
         }
@@ -456,17 +522,22 @@ class Jpz_TripleBanner extends Module
         $cat_id_b2 = (int)Configuration::get(self::B2_CATEGORY);
         $cat_link_b2 = '';
         $cat_name_b2 = '';
+        $qp2 = str_replace('/', '\/', trim((string)Configuration::get(self::B2_QUERY_PARAMS, $id_lang)));
 
         if ($cat_id_b2 > 0) {
             $category2 = new Category($cat_id_b2, $id_lang);
             if (Validate::isLoadedObject($category2)) {
-                $cat_link_b2 = $this->context->link->getCategoryLink($category2);
+
+                $catUri = Modifier::wrap($this->context->link->getCategoryLink($category2))
+                    ->appendQuery($qp2);
+
+                $cat_link_b2 = $catUri->toString();
                 $cat_name_b2 = $category2->name;
             }
         }
 
         if ($img_b2 || $text_b2) {
-             $banners_data[] = [
+            $banners_data[] = [
                 'image_url' => ($img_b2 && file_exists($this->upload_dir_path . $img_b2)) ? $this->upload_dir_url . $img_b2 : null,
                 'text' => $text_b2,
                 'category_link' => $cat_link_b2,
@@ -479,17 +550,21 @@ class Jpz_TripleBanner extends Module
         $cat_id_b3 = (int)Configuration::get(self::B3_CATEGORY);
         $cat_link_b3 = '';
         $cat_name_b3 = '';
+        $qp3 = str_replace('/', '\/', trim((string)Configuration::get(self::B3_QUERY_PARAMS, $id_lang)));
 
         if ($cat_id_b3 > 0) {
             $category3 = new Category($cat_id_b3, $id_lang);
             if (Validate::isLoadedObject($category3)) {
-                $cat_link_b3 = $this->context->link->getCategoryLink($category3);
+                $catUri = Modifier::wrap($this->context->link->getCategoryLink($category3))
+                    ->appendQuery($qp3);
+
+                $cat_link_b3 = $catUri->toString();
                 $cat_name_b3 = $category3->name;
             }
         }
 
         if ($img_b3 || $text_b3) {
-             $banners_data[] = [
+            $banners_data[] = [
                 'image_url' => ($img_b3 && file_exists($this->upload_dir_path . $img_b3)) ? $this->upload_dir_url . $img_b3 : null,
                 'text' => $text_b3,
                 'category_link' => $cat_link_b3,

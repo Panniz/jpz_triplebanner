@@ -1,0 +1,39 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  Jpz\TripleBanner\Image\BannerImageStorage: ~
+
+  Jpz\TripleBanner\Form\CategoryChoiceProvider: ~
+
+  Jpz\TripleBanner\Form\BannerType: ~
+
+  Jpz\TripleBanner\Form\BannerConfigurationType: ~
+
+  Jpz\TripleBanner\Form\BannerConfigurationDataConfiguration:
+    arguments:
+      $configuration: '@prestashop.adapter.legacy.configuration'
+
+  jpz_triplebanner.form.configuration_data_provider:
+    class: Jpz\TripleBanner\Form\BannerConfigurationFormDataProvider
+    arguments:
+      - '@Jpz\TripleBanner\Form\BannerConfigurationDataConfiguration'
+
+  jpz_triplebanner.form.configuration_handler:
+    class: PrestaShop\PrestaShop\Core\Form\Handler
+    public: true
+    autowire: false
+    autoconfigure: false
+    arguments:
+      - '@form.factory'
+      - '@prestashop.core.hook.dispatcher'
+      - '@jpz_triplebanner.form.configuration_data_provider'
+      - 'Jpz\TripleBanner\Form\BannerConfigurationType'
+      - 'JpzTripleBannerConfiguration'
+
+  Jpz\TripleBanner\Controller\Admin\ConfigurationController:
+    public: true
+    tags:
+      - 'controller.service_arguments'

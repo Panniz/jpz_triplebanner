@@ -2,15 +2,15 @@
     {assign var="bannerCount" value=count($banners)}
     <div id="jpztriplebanner" class="jpztriplebanner">
         {foreach from=$banners item=banner}
-            {if ($banner.image_url && $banner.text)}
+            {if ($banner.image && $banner.text)}
                 <div class="jpztriplebanner__banner">
                     {if $banner.category_link}
                         <a href="{$banner.category_link|escape:'htmlall':'UTF-8'}">
                     {/if}
 
-                    {if $banner.image_url}
-                        <img src="{$banner.image_url|escape:'htmlall':'UTF-8'}" alt="{l s='Banner 1' mod='Jpztriplebanner'}" />
-                    {/if}
+                    {include file='module:jpz_triplebanner/views/templates/hook/_picture.tpl'
+                        image=$banner.image
+                        alt=$banner.category_name|default:{l s='Banner' d='Modules.Jpztriplebanner.Front'}}
 
                     {if $banner.category_link}
                          </a>

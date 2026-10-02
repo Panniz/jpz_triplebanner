@@ -1,0 +1,7 @@
+jpz_triplebanner_configuration:
+  path: /jpz/triplebanner/configuration
+  methods: [GET, POST]
+  defaults:
+    _controller: Jpz\TripleBanner\Controller\Admin\ConfigurationController::index
+    _legacy_controller: AdminJpzTripleBannerConfiguration
+    _legacy_link: AdminJpzTripleBannerConfiguration

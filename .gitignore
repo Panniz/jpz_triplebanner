@@ -1,1 +1,5 @@
 vendor
+
+# Immagini caricate dal back office: contenuto runtime, non codice.
+uploads/*
+!uploads/index.php

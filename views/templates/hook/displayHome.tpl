@@ -1,19 +1,20 @@
 {if !empty($banners)}
-    {assign var="bannerCount" value=count($banners)}
-    <div id="jpztriplebanner" class="jpztriplebanner">
+    <section id="jpztriplebanner" class="jpztriplebanner full">
         {foreach from=$banners item=banner}
-            {if ($banner.image && $banner.text)}
+            {if $banner.image && $banner.text}
                 <div class="jpztriplebanner__banner">
                     {if $banner.category_link}
                         <a href="{$banner.category_link|escape:'htmlall':'UTF-8'}">
-                    {/if}
-
-                    {include file='module:jpz_triplebanner/views/templates/hook/_picture.tpl'
-                        image=$banner.image
-                        alt=$banner.category_name|default:{l s='Banner' d='Modules.Jpztriplebanner.Front'}}
-
-                    {if $banner.category_link}
-                         </a>
+                            {include file='module:jpz_triplebanner/views/templates/hook/_picture.tpl'
+                                image=$banner.image
+                                alt=$banner.category_name|default:{l s='Banner' d='Modules.Jpztriplebanner.Front'}}
+                        </a>
+                    {else}
+                        <div class="jpztriplebanner__image">
+                            {include file='module:jpz_triplebanner/views/templates/hook/_picture.tpl'
+                                image=$banner.image
+                                alt={l s='Banner' d='Modules.Jpztriplebanner.Front'}}
+                        </div>
                     {/if}
 
                     <div class="jpztriplebanner__content">
@@ -22,8 +23,8 @@
                         </div>
                         {if $banner.category_link && $banner.category_name}
                             <div class="jpztriplebanner__link">
-                                <a href="{$banner.category_link|escape:'htmlall':'UTF-8'}" class="btn">
-                                    {l s='Scopri di più su' mod='Jpztriplebanner'}
+                                <a href="{$banner.category_link|escape:'htmlall':'UTF-8'}" class="btn btn--primary">
+                                    {l s='Scopri di più su' d='Modules.Jpztriplebanner.Front'}
                                     {$banner.category_name|escape:'htmlall':'UTF-8'}
                                 </a>
                             </div>
@@ -32,5 +33,5 @@
                 </div>
             {/if}
         {/foreach}
-    </div>
+    </section>
 {/if}

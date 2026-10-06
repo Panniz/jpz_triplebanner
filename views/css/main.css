@@ -17,3 +17,11 @@
     padding: 1rem min(2rem, 10%);
     align-content: center;
 }
+.jpztriplebanner__banner picture {
+    display: block;
+}
+
+.jpztriplebanner__banner img {
+    max-width: 100%;
+    height: auto;
+}
